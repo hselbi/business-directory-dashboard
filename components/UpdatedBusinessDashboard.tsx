@@ -211,7 +211,6 @@ export default function UpdatedBusinessDashboard() {
       setBusinesses(mockBusinessData);
       setBusinessCount(mockBusinessData.length);
       setSheetName("Business_Directory_Demo.xlsx");
-      setIsAuthenticated(true);
       setCanProceedToAutomation(true);
       setLoadingStage("Analysis complete!");
 
@@ -222,7 +221,6 @@ export default function UpdatedBusinessDashboard() {
       ]);
     } catch (err: any) {
       setError(err.message || "Failed to load business data");
-      setIsAuthenticated(false);
       setCanProceedToAutomation(false);
     } finally {
       setIsLoading(false);

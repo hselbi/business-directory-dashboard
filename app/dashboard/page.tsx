@@ -4,13 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Loader2, 
-  Building2, 
-  Download,
-  Eye,
-  Grid3X3
-} from "lucide-react";
+import { Loader2, Building2, Download, Eye, Grid3X3 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Import our components
@@ -50,8 +44,10 @@ export default function Dashboard() {
   const [businessData, setBusinessData] = useState<BusinessData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
-  const [selectedBusiness, setSelectedBusiness] = useState<BusinessData | null>(null);
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  const [selectedBusiness, setSelectedBusiness] = useState<BusinessData | null>(
+    null
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
@@ -67,48 +63,57 @@ export default function Dashboard() {
     router.push("/");
   };
 
-
   const parseTransposedData = (data: SheetData): BusinessData[] => {
     if (!data.rows || data.rows.length === 0) return [];
 
     const businesses: BusinessData[] = [];
-    const businessColumns = data.headers.slice(1).filter(header => header && header.trim());
-    
+    const businessColumns = data.headers
+      .slice(1)
+      .filter((header) => header && header.trim());
+
     businessColumns.forEach((businessName) => {
       if (!businessName.trim()) return;
-      
+
       const business: BusinessData = {
         name: businessName,
-        address: '',
-        phone: '',
-        website: '',
-        email: '',
-        founded: '',
-        services: '',
-        otherServices: '',
-        size: '',
-        serviceArea: '',
-        description: '',
-        contractorType: '',
-        logo: '',
-        images: []
+        address: "",
+        phone: "",
+        website: "",
+        email: "",
+        founded: "",
+        services: "",
+        otherServices: "",
+        size: "",
+        serviceArea: "",
+        description: "",
+        contractorType: "",
+        logo: "",
+        images: [],
       };
 
-      data.rows.forEach(row => {
-        const fieldName = row[data.headers[0]]?.toLowerCase() || '';
-        const value = row[businessName] || '';
+      data.rows.forEach((row) => {
+        const fieldName = row[data.headers[0]]?.toLowerCase() || "";
+        const value = row[businessName] || "";
 
-        if (fieldName.includes('address')) business.address = value;
-        else if (fieldName.includes('phone')) business.phone = value;
-        else if (fieldName.includes('website')) business.website = value;
-        else if (fieldName.includes('email')) business.email = value;
-        else if (fieldName.includes('founded') || fieldName.includes('year')) business.founded = value;
-        else if (fieldName.includes('main services')) business.services = value;
-        else if (fieldName.includes('other') && fieldName.includes('services')) business.otherServices = value;
-        else if (fieldName.includes('size')) business.size = value;
-        else if (fieldName.includes('service area') || fieldName.includes('radius')) business.serviceArea = value;
-        else if (fieldName.includes('description')) business.description = value;
-        else if (fieldName.includes('contractor') && fieldName.includes('type')) business.contractorType = value;
+        if (fieldName.includes("address")) business.address = value;
+        else if (fieldName.includes("phone")) business.phone = value;
+        else if (fieldName.includes("website")) business.website = value;
+        else if (fieldName.includes("email")) business.email = value;
+        else if (fieldName.includes("founded") || fieldName.includes("year"))
+          business.founded = value;
+        else if (fieldName.includes("main services")) business.services = value;
+        else if (fieldName.includes("other") && fieldName.includes("services"))
+          business.otherServices = value;
+        else if (fieldName.includes("size")) business.size = value;
+        else if (
+          fieldName.includes("service area") ||
+          fieldName.includes("radius")
+        )
+          business.serviceArea = value;
+        else if (fieldName.includes("description"))
+          business.description = value;
+        else if (fieldName.includes("contractor") && fieldName.includes("type"))
+          business.contractorType = value;
       });
 
       businesses.push(business);
@@ -129,7 +134,9 @@ export default function Dashboard() {
     setBusinessData([]);
 
     try {
-      const response = await fetch(`/api/fetch-sheet?url=${encodeURIComponent(sheetUrl)}`);
+      const response = await fetch(
+        `/api/fetch-sheet?url=${encodeURIComponent(sheetUrl)}`
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -138,10 +145,9 @@ export default function Dashboard() {
 
       const data: SheetData = await response.json();
       setSheetData(data);
-      
+
       const businesses = parseTransposedData(data);
       setBusinessData(businesses);
-      
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -151,13 +157,13 @@ export default function Dashboard() {
 
   const downloadJSON = () => {
     if (!businessData.length) return;
-    
+
     const jsonContent = JSON.stringify(businessData, null, 2);
-    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const blob = new Blob([jsonContent], { type: "application/json" });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'business_data.json';
+    a.download = "business_data.json";
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -172,20 +178,22 @@ export default function Dashboard() {
 
     setUploading(true);
     const fileUrl = URL.createObjectURL(file);
-    
-    const updatedBusinessData = businessData.map(business => {
+
+    const updatedBusinessData = businessData.map((business) => {
       if (business.name === selectedBusiness.name) {
         return { ...business, logo: fileUrl };
       }
       return business;
     });
-    
+
     setBusinessData(updatedBusinessData);
-    const updatedBusiness = updatedBusinessData.find(b => b.name === selectedBusiness.name);
+    const updatedBusiness = updatedBusinessData.find(
+      (b) => b.name === selectedBusiness.name
+    );
     if (updatedBusiness) {
       setSelectedBusiness(updatedBusiness);
     }
-    
+
     setUploading(false);
   };
 
@@ -193,40 +201,44 @@ export default function Dashboard() {
     if (!selectedBusiness) return;
 
     setUploading(true);
-    const fileUrls = files.map(file => URL.createObjectURL(file));
-    
-    const updatedBusinessData = businessData.map(business => {
+    const fileUrls = files.map((file) => URL.createObjectURL(file));
+
+    const updatedBusinessData = businessData.map((business) => {
       if (business.name === selectedBusiness.name) {
         const currentImages = business.images || [];
         return { ...business, images: [...currentImages, ...fileUrls] };
       }
       return business;
     });
-    
+
     setBusinessData(updatedBusinessData);
-    const updatedBusiness = updatedBusinessData.find(b => b.name === selectedBusiness.name);
+    const updatedBusiness = updatedBusinessData.find(
+      (b) => b.name === selectedBusiness.name
+    );
     if (updatedBusiness) {
       setSelectedBusiness(updatedBusiness);
     }
-    
+
     setUploading(false);
   };
 
   const handleRemoveLogo = () => {
     if (!selectedBusiness) return;
-    
-    const updatedBusinessData = businessData.map(business => {
+
+    const updatedBusinessData = businessData.map((business) => {
       if (business.name === selectedBusiness.name) {
         if (business.logo) {
           URL.revokeObjectURL(business.logo);
         }
-        return { ...business, logo: '' };
+        return { ...business, logo: "" };
       }
       return business;
     });
-    
+
     setBusinessData(updatedBusinessData);
-    const updatedBusiness = updatedBusinessData.find(b => b.name === selectedBusiness.name);
+    const updatedBusiness = updatedBusinessData.find(
+      (b) => b.name === selectedBusiness.name
+    );
     if (updatedBusiness) {
       setSelectedBusiness(updatedBusiness);
     }
@@ -234,21 +246,25 @@ export default function Dashboard() {
 
   const handleRemoveImage = (imageUrl: string) => {
     if (!selectedBusiness) return;
-    
-    const updatedBusinessData = businessData.map(business => {
+
+    const updatedBusinessData = businessData.map((business) => {
       if (business.name === selectedBusiness.name) {
-        const filteredImages = (business.images || []).filter(img => img !== imageUrl);
+        const filteredImages = (business.images || []).filter(
+          (img) => img !== imageUrl
+        );
         return { ...business, images: filteredImages };
       }
       return business;
     });
-    
+
     setBusinessData(updatedBusinessData);
-    const updatedBusiness = updatedBusinessData.find(b => b.name === selectedBusiness.name);
+    const updatedBusiness = updatedBusinessData.find(
+      (b) => b.name === selectedBusiness.name
+    );
     if (updatedBusiness) {
       setSelectedBusiness(updatedBusiness);
     }
-    
+
     URL.revokeObjectURL(imageUrl);
   };
 
@@ -261,15 +277,12 @@ export default function Dashboard() {
   }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50"
     >
-      <DashboardHeader 
-        userEmail={user.email}
-        onLogout={handleLogout}
-      />
+      <DashboardHeader userEmail={user.email} onLogout={handleLogout} />
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <DataImportForm
@@ -289,26 +302,30 @@ export default function Dashboard() {
             {/* Stats & Controls */}
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-4">
-                <Badge variant="outline" className="px-3 py-1 bg-blue-50 text-blue-700 border-blue-200">
+                <Badge
+                  variant="outline"
+                  className="px-3 py-1 bg-blue-50 text-blue-700 border-blue-200"
+                >
                   <Building2 className="h-3 w-3 mr-1" />
-                  {businessData.length} {businessData.length === 1 ? 'Business' : 'Businesses'} Found
+                  {businessData.length}{" "}
+                  {businessData.length === 1 ? "Business" : "Businesses"} Found
                 </Badge>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Button
-                  variant={viewMode === 'cards' ? 'default' : 'outline'}
+                  variant={viewMode === "cards" ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setViewMode('cards')}
+                  onClick={() => setViewMode("cards")}
                   className="gap-2"
                 >
                   <Eye className="h-4 w-4" />
                   Cards
                 </Button>
                 <Button
-                  variant={viewMode === 'table' ? 'default' : 'outline'}
+                  variant={viewMode === "table" ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setViewMode('table')}
+                  onClick={() => setViewMode("table")}
                   className="gap-2"
                 >
                   <Grid3X3 className="h-4 w-4" />
@@ -327,7 +344,7 @@ export default function Dashboard() {
             </div>
 
             {/* Business Cards View */}
-            {viewMode === 'cards' && (
+            {viewMode === "cards" && (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <AnimatePresence>
                   {businessData.map((business, index) => (
@@ -335,7 +352,7 @@ export default function Dashboard() {
                       key={index}
                       business={business}
                       index={index}
-                      onClick={() => handleCardClick(business)}
+                      onViewDetails={() => handleCardClick(business)}
                     />
                   ))}
                 </AnimatePresence>
@@ -343,7 +360,7 @@ export default function Dashboard() {
             )}
 
             {/* Table View */}
-            {viewMode === 'table' && sheetData && (
+            {viewMode === "table" && sheetData && (
               <BusinessDataTable sheetData={sheetData} />
             )}
           </motion.div>
