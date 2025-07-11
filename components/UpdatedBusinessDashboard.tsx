@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,8 +24,10 @@ import { BusinessData } from "@/types/business";
 import BusinessDetailModal from "./BusinessDetailModal";
 import BusinessCard from "./BusinessCard";
 import StandaloneAutomation from "./StandaloneAutomation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function UpdatedBusinessDashboard() {
+  const { user, logout, isAuthenticated, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [businessCount, setBusinessCount] = useState<number | null>(null);
   const [businesses, setBusinesses] = useState<BusinessData[]>([]);
@@ -36,12 +39,24 @@ export default function UpdatedBusinessDashboard() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [loadingStage, setLoadingStage] = useState<string>("");
   const [processingErrors, setProcessingErrors] = useState<string[]>([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [canProceedToAutomation, setCanProceedToAutomation] = useState(false);
   const [accessToken, setAccessToken] = useState<string>("");
   const [currentView, setCurrentView] = useState<"dashboard" | "automation">(
     "dashboard"
   );
+  const router = useRouter();
+
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push("/");
+    }
+  }, [authLoading, isAuthenticated, router]);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
 
   // Mock data for MVP demonstration
   const mockBusinessData: BusinessData[] = [
