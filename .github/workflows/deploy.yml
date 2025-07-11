@@ -33,12 +33,7 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: |
-          if [ -f pnpm-lock.yaml ]; then
-            pnpm install --frozen-lockfile
-          else
-            pnpm install
-          fi
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run ESLint
         run: pnpm run lint
@@ -70,6 +65,9 @@ jobs:
         with:
           node-version: "18"
           cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
 
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
@@ -119,6 +117,9 @@ jobs:
         with:
           node-version: "18"
           cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
 
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
