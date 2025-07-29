@@ -1,3 +1,20 @@
+export interface BusinessImage {
+  name: string;
+  type: "logo" | "banner" | "image";
+  driveId: string;
+  url: string;
+  thumbnailUrl?: string;
+}
+
+export interface AutomationLog {
+  id: string;
+  timestamp: string;
+  type: "info" | "success" | "error" | "warning";
+  business?: string;
+  message: string;
+  details?: any;
+}
+
 export interface BusinessData {
   name: string;
   address: string;
@@ -12,8 +29,7 @@ export interface BusinessData {
   description: string;
   contractorType: string;
   logo?: string;
-  images?: string[];
-}
+  images?: BusinessImage[];}
 
 export interface BusinessAnalytics {
   totalBusinesses: number;
@@ -40,4 +56,14 @@ export interface AutomationStats {
   status: "idle" | "running" | "paused" | "completed" | "error";
   startTime?: string;
   estimatedTimeRemaining?: number;
+}
+
+
+export interface EnhancedBusinessData extends BusinessData {
+  images: BusinessImage[];  // This ensures images are always BusinessImage[]
+  imageFolder: {
+    id: string;
+    name: string;
+    found: boolean;
+  };
 }

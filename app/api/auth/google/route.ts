@@ -19,7 +19,8 @@ export async function GET(request: NextRequest) {
         access_type: 'offline',
         scope: [
           'https://www.googleapis.com/auth/drive.readonly',
-          'https://www.googleapis.com/auth/spreadsheets.readonly'
+          'https://www.googleapis.com/auth/spreadsheets.readonly',
+          'https://www.googleapis.com/auth/drive.file'
         ],
         include_granted_scopes: true
       })

@@ -1,3 +1,5 @@
+// components/EnhancedBusinessCard.tsx
+
 "use client";
 
 import React from "react";
@@ -13,23 +15,30 @@ import {
   Building2,
   Eye,
   Image as ImageIcon,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
 } from "lucide-react";
 import { BusinessData } from "@/types/business";
+import { BusinessValidator } from "@/lib/business-validator";
 
-interface BusinessCardProps {
-  business: BusinessData;
+interface EnhancedBusinessCardProps {
+  business: BusinessData & { _validation?: any };
   index: number;
   onViewDetails: (business: BusinessData) => void;
+  showValidation?: boolean;
 }
 
-export default function BusinessCard({
+export default function EnhancedBusinessCard({
   business,
   index,
   onViewDetails,
-}: BusinessCardProps) {
-  const imageCount = business.images?.length || 0;
-  const logoImage = business.images?.find((img) => img.type === "logo");
-  const hasLogo = !!logoImage;
+  showValidation = true,
+}: EnhancedBusinessCardProps) {
+  // Get validation if not already attached
+  const validation =
+    business._validation || BusinessValidator.validateBusiness(business);
+  const { imageDetails } = validation;
 
   const getContractorTypeColor = (type?: string) => {
     if (!type) return "bg-slate-500/10 text-slate-600 border-slate-200";
@@ -90,51 +99,20 @@ export default function BusinessCard({
   const defaultLogo =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f1f5f9'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-family='Arial, sans-serif' font-size='14' fill='%2364748b'%3ENo Logo%3C/text%3E%3C/svg%3E";
 
-  // ✅ FIXED: Smart image loading with multiple URL attempts
-  const SmartImage = ({
-    driveId,
-    alt,
-    className,
-  }: {
-    driveId: string;
-    alt: string;
-    className: string;
-  }) => {
-    const [currentUrlIndex, setCurrentUrlIndex] = React.useState(0);
-    const [hasError, setHasError] = React.useState(false);
+  // Get completion status styling
+  const getCardStyling = () => {
+    if (!showValidation) return "border-slate-200/60";
 
-    const workingUrls = [
-      `https://lh3.googleusercontent.com/d/${driveId}=w400`,
-      `https://drive.google.com/thumbnail?id=${driveId}&sz=w400`,
-      `https://drive.google.com/thumbnail?id=${driveId}&sz=w200`,
-    ];
-
-    const handleError = () => {
-      if (currentUrlIndex < workingUrls.length - 1) {
-        setCurrentUrlIndex(currentUrlIndex + 1);
-      } else {
-        setHasError(true);
-      }
-    };
-
-    if (hasError) {
-      return <img src={defaultLogo} alt={alt} className={className} />;
+    if (validation.isComplete) {
+      return "border-green-200/60 bg-green-50/30";
+    } else {
+      return "border-orange-200/60 bg-orange-50/30";
     }
-
-    return (
-      <img
-        src={workingUrls[currentUrlIndex]}
-        alt={alt}
-        className={className}
-        onError={handleError}
-        loading="lazy"
-      />
-    );
   };
 
   return (
     <Card
-      className="group border border-slate-200/60 bg-white/70 backdrop-blur-sm hover:shadow-lg hover:shadow-slate-200/50 hover:bg-white/90 transition-all duration-300 hover:scale-[1.01] overflow-hidden"
+      className={`group ${getCardStyling()} backdrop-blur-sm hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-300 hover:scale-[1.01] overflow-hidden`}
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <CardContent className="p-4">
@@ -142,11 +120,15 @@ export default function BusinessCard({
           {/* Business Logo */}
           <div className="relative flex-shrink-0">
             <div className="w-12 h-12 rounded-lg overflow-hidden bg-white shadow border border-slate-200/60">
-              {hasLogo ? (
-                <SmartImage
-                  driveId={logoImage.driveId}
+              {imageDetails.hasLogo ? (
+                <img
+                  src={imageDetails.logoImage?.url || defaultLogo}
                   alt={`${business.name} logo`}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = defaultLogo;
+                  }}
                 />
               ) : (
                 <img
@@ -156,9 +138,15 @@ export default function BusinessCard({
                 />
               )}
             </div>
-            {!hasLogo && (
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-100 border border-amber-200 rounded-full flex items-center justify-center">
-                <ImageIcon className="h-2.5 w-2.5 text-amber-600" />
+
+            {/* Logo status indicator */}
+            {showValidation && (
+              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center">
+                {imageDetails.hasLogo ? (
+                  <CheckCircle className="h-4 w-4 text-green-600 bg-white rounded-full" />
+                ) : (
+                  <XCircle className="h-4 w-4 text-red-600 bg-white rounded-full" />
+                )}
               </div>
             )}
           </div>
@@ -167,9 +155,20 @@ export default function BusinessCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between mb-2">
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-bold text-slate-900 truncate">
-                  {business.name}
-                </h3>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-lg font-bold text-slate-900 truncate">
+                    {business.name}
+                  </h3>
+                  {showValidation && (
+                    <div className="flex items-center gap-1">
+                      {validation.isComplete ? (
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <AlertTriangle className="h-4 w-4 text-orange-600" />
+                      )}
+                    </div>
+                  )}
+                </div>
                 <p className="text-sm text-slate-600 line-clamp-1">
                   {business.description || "No description available"}
                 </p>
@@ -200,7 +199,7 @@ export default function BusinessCard({
               </div>
             </div>
 
-            {/* Badges and Action */}
+            {/* Badges and Image Status */}
             <div className="flex items-center justify-between">
               <div className="flex flex-wrap gap-2">
                 <Badge
@@ -217,10 +216,61 @@ export default function BusinessCard({
                 >
                   {business.size ? business.size.split(" ")[0] : "Unknown"}
                 </Badge>
-                {imageCount > 0 && (
+
+                {/* ✅ Enhanced Image Status Badge */}
+                {showValidation && (
+                  <div className="flex gap-1">
+                    {/* Logo Badge */}
+                    <Badge
+                      className={`text-xs flex items-center gap-1 ${
+                        imageDetails.hasLogo
+                          ? "bg-green-100 text-green-800 border-green-200"
+                          : "bg-red-100 text-red-800 border-red-200"
+                      }`}
+                    >
+                      {imageDetails.hasLogo ? (
+                        <CheckCircle className="h-3 w-3" />
+                      ) : (
+                        <XCircle className="h-3 w-3" />
+                      )}
+                      Logo
+                    </Badge>
+
+                    {/* Banner Badge */}
+                    <Badge
+                      className={`text-xs flex items-center gap-1 ${
+                        imageDetails.hasBanner
+                          ? "bg-green-100 text-green-800 border-green-200"
+                          : "bg-red-100 text-red-800 border-red-200"
+                      }`}
+                    >
+                      {imageDetails.hasBanner ? (
+                        <CheckCircle className="h-3 w-3" />
+                      ) : (
+                        <XCircle className="h-3 w-3" />
+                      )}
+                      Banner
+                    </Badge>
+
+                    {/* Additional Images Badge */}
+                    <Badge
+                      className={`text-xs flex items-center gap-1 ${
+                        imageDetails.additionalCount >= 1
+                          ? "bg-green-100 text-green-800 border-green-200"
+                          : "bg-red-100 text-red-800 border-red-200"
+                      }`}
+                    >
+                      <ImageIcon className="h-3 w-3" />+
+                      {imageDetails.additionalCount}
+                    </Badge>
+                  </div>
+                )}
+
+                {/* Total Images (if not showing validation) */}
+                {!showValidation && imageDetails.total > 0 && (
                   <Badge className="bg-slate-100 text-slate-700 border-slate-200 font-medium px-2 py-1 text-xs flex items-center gap-1">
                     <ImageIcon className="h-3 w-3" />
-                    {imageCount}
+                    {imageDetails.total}
                   </Badge>
                 )}
               </div>
@@ -232,9 +282,36 @@ export default function BusinessCard({
                 className="ml-3 text-slate-600 hover:text-slate-800 hover:bg-slate-50 border-slate-200 hover:border-slate-300 transition-all duration-200"
               >
                 <Eye className="h-4 w-4 mr-1" />
-                More Details
+                Details
               </Button>
             </div>
+
+            {/* Validation Summary (for incomplete businesses) */}
+            {showValidation &&
+              !validation.isComplete &&
+              validation.missing.length > 0 && (
+                <div className="mt-3 p-2 bg-orange-50 border border-orange-200 rounded text-xs">
+                  <div className="font-medium text-orange-800 mb-1">
+                    Missing {validation.missing.length} field
+                    {validation.missing.length !== 1 ? "s" : ""}:
+                  </div>
+                  <div className="text-orange-700 line-clamp-2">
+                    {validation.missing.slice(0, 3).join(", ")}
+                    {validation.missing.length > 3 &&
+                      ` and ${validation.missing.length - 3} more...`}
+                  </div>
+                </div>
+              )}
+
+            {/* Completion Status (for complete businesses) */}
+            {showValidation && validation.isComplete && (
+              <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded text-xs">
+                <div className="font-medium text-green-800 flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3" />
+                  Ready for automation - All requirements met
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
