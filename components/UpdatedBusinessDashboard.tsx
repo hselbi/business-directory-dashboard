@@ -46,7 +46,6 @@ export default function UpdatedBusinessDashboard() {
   );
   const router = useRouter();
 
-
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       router.push("/");
@@ -78,8 +77,20 @@ export default function UpdatedBusinessDashboard() {
       contractorType: "Specialized Contractor",
       logo: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=100&h=100&fit=crop&crop=center",
       images: [
-        "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop",
+        {
+          name: "Elite Roofing Logo",
+          type: "logo",
+          driveId: "1234567890abcdef",
+          url: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop",
+          thumbnailUrl:
+            "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=100&h=100&fit=crop&crop=center",
+        },
+        {
+          name: "Roof Installation Example",
+          type: "image",
+          driveId: "abcdef1234567890",
+          url: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop",
+        },
       ],
     },
     {
@@ -100,8 +111,20 @@ export default function UpdatedBusinessDashboard() {
       contractorType: "Technology Provider",
       logo: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=100&h=100&fit=crop&crop=center",
       images: [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop",
+        {
+          name: "TechFlow Logo",
+          type: "logo",
+          driveId: "abcdef1234567890",
+          url: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop",
+          thumbnailUrl:
+            "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=100&h=100&fit=crop&crop=center",
+        },
+        {
+          name: "Web Development Example",
+          type: "image",
+          driveId: "1234567890abcdef",
+          url: "https://images.unsplash.com/photo-1521790988038-8c1e4c5a9e6f?w=400&h=300&fit=crop",
+        },
       ],
     },
     {
@@ -122,7 +145,14 @@ export default function UpdatedBusinessDashboard() {
       contractorType: "General Contractor",
       logo: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=100&h=100&fit=crop&crop=center",
       images: [
-        "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop",
+        {
+          name: "GreenBuild Logo",
+          type: "logo",
+          driveId: "abcdef1234567890",
+          url: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop",
+          thumbnailUrl:
+            "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=100&h=100&fit=crop&crop=center",
+        },
       ],
     },
     {
@@ -143,7 +173,20 @@ export default function UpdatedBusinessDashboard() {
       contractorType: "Specialized Contractor",
       logo: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=100&h=100&fit=crop&crop=center",
       images: [
-        "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=300&fit=crop",
+        {
+          name: "Metropolitan HVAC Logo",
+          type: "logo",
+          driveId: "1234567890abcdef",
+          url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop",
+          thumbnailUrl:
+            "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=100&h=100&fit=crop&crop=center",
+        },
+        {
+          name: "HVAC Installation Example",
+          type: "image",
+          driveId: "abcdef1234567890",
+          url: "https://images.unsplash.com/photo-1594736797933-d0401ba871ff?w=400&h=300&fit=crop",
+        },
       ],
     },
     {
@@ -182,7 +225,14 @@ export default function UpdatedBusinessDashboard() {
       contractorType: "Technology Contractor",
       logo: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=100&h=100&fit=crop&crop=center",
       images: [
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+        {
+          name: "Advanced Security Logo",
+          type: "logo",
+          driveId: "1234567890abcdef",
+          url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=300&fit=crop",
+          thumbnailUrl:
+            "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=100&h=100&fit=crop&crop=center",
+        },
       ],
     },
   ];
