@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 
+# images
+/downloads
+
 # next.js
 /.next/
 /out/
