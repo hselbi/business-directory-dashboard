@@ -66,8 +66,8 @@ const GoogleAppPasswordGuide = () => {
                   src="/images/app-password-example.png"
                   alt="App Password Example"
                   width={300}
-                  height={200}
-                  className="w-full h-32 object-cover rounded-md mb-2"
+                  height={100}
+                  className="w-full h-full object-cover rounded-md mb-2"
                 />
                 <p className="text-sm text-blue-700">
                   Example: xxxx-xxxx-xxxx-xxxx
@@ -92,11 +92,11 @@ const GoogleAppPasswordGuide = () => {
               </p>
               <div className="bg-green-50 p-4 rounded-lg">
                 <Image
-                  src="/images/third-party-apps.png"
+                  src="/images/third-party-apps.jpeg"
                   alt="Third-party Apps Security"
-                  width={300}
-                  height={200}
-                  className="w-full h-32 object-cover rounded-md mb-2"
+                  width={500}
+                  height={600}
+                  className="w-full h-full object-cover rounded-md mb-2"
                 />
                 <p className="text-sm text-green-700">
                   Common uses: Email automation, IMAP clients, Mobile apps, API
@@ -387,7 +387,7 @@ const GoogleAppPasswordGuide = () => {
                     alt="IMAP Email Automation Setup"
                     width={400}
                     height={250}
-                    className="w-full h-48 object-cover rounded-lg border"
+                    className="w-full h-28 object-cover rounded-lg border"
                   />
                 </div>
               </div>

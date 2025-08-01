@@ -35,7 +35,7 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/main");
+      router.push("/dashboard");
     }
   }, [isAuthenticated, router]);
 
@@ -50,7 +50,7 @@ export default function AuthPage() {
 
     try {
       await login(email, password);
-      router.push("/main");
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Login failed");
     } finally {
@@ -84,7 +84,7 @@ export default function AuthPage() {
 
     try {
       await register({ email, password, name, company });
-      router.push("/main");
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Registration failed");
     } finally {
@@ -98,7 +98,7 @@ export default function AuthPage() {
 
     try {
       await login("admin@businessintel.com", "admin123");
-      router.push("/main");
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Demo login failed");
     } finally {

@@ -99,6 +99,8 @@ export default function BusinessFilteredDashboard() {
 
       setLoadingStage("Processing and filtering business data...");
 
+      console.log(result)
+
       // Transform the data to match your existing interface
       const transformedBusinesses: BusinessData[] = result.data.map(
         (business: any) => ({
