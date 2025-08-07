@@ -19,16 +19,14 @@ export class GoogleDriveClient {
   private auth: any;
   private drive: any;
 
-  constructor(credentialsPath: string) {
-    this.initializeAuth(credentialsPath);
+  constructor(encodedKey: string) {
+    this.initializeAuth(encodedKey);
   }
 
-  private initializeAuth(credentialsPath: string) {
+  private initializeAuth(encodedKey: string) {
     try {
-      const credentialsBuffer = fs.readFileSync(credentialsPath);
-      const credentials: GoogleCredentials = JSON.parse(
-        credentialsBuffer.toString()
-      );
+      const decodedKey = Buffer.from(encodedKey, "base64").toString("utf8");
+      const credentials: GoogleCredentials = JSON.parse(decodedKey);
 
       this.auth = new google.auth.JWT({
         email: credentials.client_email,
@@ -44,7 +42,6 @@ export class GoogleDriveClient {
       console.log("✅ Google Drive client initialized with service account");
     } catch (error) {
       console.error("❌ Failed to initialize Google Drive client:", error);
-      throw new Error(`Failed to read credentials from ${credentialsPath}`);
     }
   }
 

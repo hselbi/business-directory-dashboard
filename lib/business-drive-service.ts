@@ -46,11 +46,11 @@ export class BusinessDriveService {
   private csvFileId?: string;
 
   constructor(
-    credentialsPath: string,
+    encodedKey: string,
     private mainFolderName: string = "Business Directory",
     private csvFileName: string = "businesses"
   ) {
-    this.driveClient = new GoogleDriveClient(credentialsPath);
+    this.driveClient = new GoogleDriveClient(encodedKey);
   }
 
   async initialize(): Promise<void> {

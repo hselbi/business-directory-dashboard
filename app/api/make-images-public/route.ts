@@ -13,12 +13,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const credentialsPath = path.join(
-      process.cwd(),
-      "credentials",
-      "service-account.json"
-    );
-    const driveClient = new GoogleDriveClient(credentialsPath);
+    const encodedKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY!;
+    console.log(encodedKey ? "exist code" : "nothing");
+    const driveClient = new GoogleDriveClient(encodedKey);
 
     const results = [];
 
