@@ -129,7 +129,7 @@ export class GoogleDriveClient {
 
       console.log(`✅ Successfully made file ${fileId} public`);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error(`⚠️ Could not make file ${fileId} public:`, error.message);
       return false;
     }
