@@ -118,19 +118,19 @@ export class GoogleDriveClient {
   async makeFilePublic(fileId: string): Promise<boolean> {
     try {
       console.log(`🔓 Making file ${fileId} publicly accessible...`);
-      
+
       await this.drive.permissions.create({
         fileId: fileId,
         requestBody: {
-          role: 'reader',
-          type: 'anyone'
-        }
+          role: "reader",
+          type: "anyone",
+        },
       });
-      
+
       console.log(`✅ Successfully made file ${fileId} public`);
       return true;
     } catch (error) {
-      console.warn(`⚠️ Could not make file ${fileId} public:`, error);
+      console.error(`⚠️ Could not make file ${fileId} public:`, error.message);
       return false;
     }
   }
@@ -140,9 +140,9 @@ export class GoogleDriveClient {
     try {
       const response = await this.drive.permissions.list({
         fileId: fileId,
-        fields: 'permissions(id,type,role,emailAddress)'
+        fields: "permissions(id,type,role,emailAddress)",
       });
-      
+
       return response.data.permissions || [];
     } catch (error) {
       console.error(`❌ Could not get permissions for ${fileId}:`, error);
@@ -153,8 +153,9 @@ export class GoogleDriveClient {
   async isFilePublic(fileId: string): Promise<boolean> {
     try {
       const permissions = await this.getFilePermissions(fileId);
-      return permissions.some(permission => 
-        permission.type === 'anyone' && permission.role === 'reader'
+      return permissions.some(
+        (permission) =>
+          permission.type === "anyone" && permission.role === "reader"
       );
     } catch (error) {
       console.error(`❌ Could not check if file ${fileId} is public:`, error);

@@ -133,6 +133,7 @@ export default function AutomationPage({
     try {
       const BOT_API_URL =
         process.env.NEXT_PUBLIC_BOT_API_URL || "http://localhost:3001";
+      console.log(`Connecting to bot server at ${BOT_API_URL}`);
       const socket = io(BOT_API_URL, {
         timeout: 5000,
         reconnection: true,

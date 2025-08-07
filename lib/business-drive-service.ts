@@ -345,7 +345,6 @@ export class BusinessDriveService {
       gmailAppPassword: getValue("Gmail App Password"),
     };
 
-    console.log(business)
     if (!business.name || (!business.phone && !business.email)) {
       return null;
     }
